@@ -1,3 +1,10 @@
+#include <stdio.h>
+#include <sys/types.h>
+#include <unistd.h>
+#include <stdlib.h>
+#include <pwd.h>
+#include "minish.h"
+
 #define HELP_CD "cd [..|dir] - cambia de directorio corriente"
 #define HELP_DIR "dir [str]- muestra archivos en directorio corriente, que tengan 'str'"
 #define HELP_EXIT "exit [status] - finaliza el minish con un status de retorno (por defecto 0)"
@@ -8,6 +15,10 @@
 #define HELP_SETENV "setenv var valor - agrega o cambia valor de variable de ambiente"
 #define HELP_STATUS "status - muestra status de retorno de ultimo comando ejecutado"
 #define HELP_UID "uid - muestra nombre y número de usuario dueño del minish"
+
+#define HELPOPT "--help"
+
+extern char **environ;
 
 extern int builtin_exit(int argc, char **argv);
 extern int builtin_help(int argc, char **argv);

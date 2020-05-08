@@ -14,7 +14,7 @@ struct builtin_struct builtin_arr[] = {
     {"setenv", builtin_setenv, HELP_SETENV},
     {"status", builtin_status, HELP_STATUS},
     {"uid", builtin_uid, HELP_UID},
-    {NULL,NULL,NULL}};
+    {NULL, NULL, NULL}};
 
 struct builtin_struct *
 builtin_lookup(char *cmd)
@@ -24,8 +24,7 @@ builtin_lookup(char *cmd)
     while (builtin_struct_ptr->cmd != NULL)
     {
         if (strcmp(cmd, builtin_struct_ptr->cmd) == 0)
-             return builtin_struct_ptr;
-        printf("%s\n", builtin_struct_ptr->cmd);
+            return builtin_struct_ptr;
         builtin_struct_ptr++;
     }
     return NULL;

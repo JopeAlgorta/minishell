@@ -1,46 +1,29 @@
-#include <unistd.h>
-#include <stdlib.h>
-#include <string.h>
-#include <stdio.h>
-#include <error.h>
-#include <errno.h>
-#include <signal.h>
-#include <pwd.h>
-#include <sys/types.h>
-#include <sys/wait.h>
-#include <dirent.h>
-#include <sys/stat.h>
-#include <fcntl.h>
 #include "minish.h"
 #include "builtins.h"
 
-#define _BSD_SOURCE // definicion para evitar warning cuando se invoca a gethostname()
-#define DELIMS " \n\t"
-
-void print_prompt();
+int globalstatret = 0;
+void catch_ctrl_C(int);
+void run(char *, char, char **);
 
 int main()
 {
+    struct sigaction act;
     char line[MAXLINE];
     char *argv[MAXWORDS];
     int argc = 0;
-    while (1)
-    {
-        print_prompt();
-        fgets(line, MAXLINE, stdin);
-        argc = linea2argv(line, MAXWORDS, argv);
-        if (argc != 0)
-            ejecutar(argc, argv);
-        argc = 0;
-    }
 
+    sigaction(SIGINT, NULL, &act);
+    act.sa_handler = catch_ctrl_C;
+    sigaction(SIGINT, &act, NULL);
+
+    run(line, argc, argv);
     return 0;
 }
 
 int linea2argv(char *linea, int argc, char **argv)
 {
     char *word, len = 0;
-    word = *argv++ = strtok(linea, DELIMS);
+    word = *argv++ = strtok(linea, DELIMS); // falta ver lo de las comillas
     while (word != NULL && len <= argc)
     {
         len++;
@@ -52,13 +35,11 @@ int linea2argv(char *linea, int argc, char **argv)
 int ejecutar(int argc, char **argv)
 {
     struct builtin_struct *matched_struct = NULL;
-    if ((matched_struct = builtin_lookup(argv[0])) != NULL) {
-        printf("Encontre el comando\n"); 
-        matched_struct->func(argc, argv);
-    }
+    if ((matched_struct = builtin_lookup(argv[0])) != NULL)
+        globalstatret = matched_struct->func(argc, argv);
     else
-        externo(argc, argv);
-    return 0;
+        globalstatret = externo(argc, argv);
+    return globalstatret;
 }
 
 int externo(int argc, char **argv)
@@ -71,8 +52,29 @@ void print_prompt()
 {
     char cwd[MAXCWD];
     getcwd(cwd, sizeof(cwd));
-    char hostname[1024];
-    gethostname(hostname, sizeof(hostname) - 1);
+    char hostname[256];
+    gethostname(hostname, (size_t)sizeof(hostname));
     char *user = getlogin();
-    fprintf(stdout, "\033[0;36m%s@%s\033[0m:\033[01;33m%s\033[0m> ", user, hostname, cwd);
+    fprintf(stderr, "\033[0;36m%s@%s\033[0m:\033[01;33m%s\033[0m> ", user, hostname, cwd);
+}
+
+void catch_ctrl_C(int sig)
+{
+    return;
+}
+
+void run(char *line, char argc, char **argv)
+{
+    char *res;
+    while (1)
+    {
+        print_prompt();
+        res = fgets(line, MAXLINE, stdin);
+        argc = linea2argv(line, MAXWORDS, argv);
+        if (res != NULL && argc > 0)
+            ejecutar(argc, argv);
+        else if (res == NULL)
+            putchar('\n');
+        argc = 0;
+    }
 }
