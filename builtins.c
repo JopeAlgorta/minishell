@@ -12,6 +12,7 @@ struct builtin_struct builtin_arr[] = {
     {"getenv", builtin_getenv, HELP_GETENV},
     {"pid", builtin_pid, HELP_PID},
     {"setenv", builtin_setenv, HELP_SETENV},
+    {"unsetenv", builtin_unsetenv, HELP_UNSETENV},
     {"status", builtin_status, HELP_STATUS},
     {"uid", builtin_uid, HELP_UID},
     {NULL, NULL, NULL}};

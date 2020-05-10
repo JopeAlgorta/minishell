@@ -23,8 +23,9 @@ int builtin_cd(int argc, char **argv)
         else
         {
             setenv("OLDPWD", cwd, 1);
-            strcat(cwd, "/");
-            status = chdir(strcat(cwd, argv[1]));
+            char *newCWD[MAXCWD];
+            snprintf(newCWD, MAXCWD, "%s/%s", cwd, argv[1]);
+            status = chdir(newCWD);
             if (status == -1)
                 printf("minish: %s: %s: No such file or directory\n", argv[0], argv[1]);
         }

@@ -13,6 +13,7 @@
 #define HELP_GETENV "getenv var [var] - muestra valor de variable(s) de ambiente"
 #define HELP_PID "pid - muestra Process Id del minish"
 #define HELP_SETENV "setenv var valor - agrega o cambia valor de variable de ambiente"
+#define HELP_UNSETENV "unsetenv var [var...] - elimina las variables de ambiente especificadas"
 #define HELP_STATUS "status - muestra status de retorno de ultimo comando ejecutado"
 #define HELP_UID "uid - muestra nombre y número de usuario dueño del minish"
 

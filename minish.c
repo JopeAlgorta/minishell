@@ -2,7 +2,6 @@
 #include "builtins.h"
 
 int globalstatret = 0;
-void catch_ctrl_C(int);
 void run(char *, char, char **);
 
 int main()
@@ -20,34 +19,6 @@ int main()
     return 0;
 }
 
-int linea2argv(char *linea, int argc, char **argv)
-{
-    char *word, len = 0;
-    word = *argv++ = strtok(linea, DELIMS); // falta ver lo de las comillas
-    while (word != NULL && len <= argc)
-    {
-        len++;
-        word = *argv++ = strtok(NULL, DELIMS); // falta ver lo de las comillas
-    }
-    return len;
-}
-
-int ejecutar(int argc, char **argv)
-{
-    struct builtin_struct *matched_struct = NULL;
-    if ((matched_struct = builtin_lookup(argv[0])) != NULL)
-        globalstatret = matched_struct->func(argc, argv);
-    else
-        globalstatret = externo(argc, argv);
-    return globalstatret;
-}
-
-int externo(int argc, char **argv)
-{
-    printf("No encontre el comando\n");
-    return 0;
-}
-
 void print_prompt()
 {
     char cwd[MAXCWD];
@@ -60,21 +31,33 @@ void print_prompt()
 
 void catch_ctrl_C(int sig)
 {
+    putchar('\n');
     return;
 }
 
 void run(char *line, char argc, char **argv)
 {
     char *res;
+    char *home, minish_history_dir[MAXCWD];
+    FILE *f;
+
     while (1)
     {
         print_prompt();
         res = fgets(line, MAXLINE, stdin);
+        home = getenv("HOME");
+        snprintf(minish_history_dir, MAXCWD, "%s/%s", home, HISTORY_FILE);
+        f = fopen(minish_history_dir, "a");
+        if (f != NULL)
+        {
+            fprintf(f, "%s", line);
+            fclose(f);
+        }
         argc = linea2argv(line, MAXWORDS, argv);
         if (res != NULL && argc > 0)
             ejecutar(argc, argv);
-        else if (res == NULL)
-            putchar('\n');
+        // else if (res == NULL)
+        //     putchar('\n');
         argc = 0;
     }
 }

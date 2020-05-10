@@ -45,7 +45,8 @@ extern int globalstatret; // guarda status del ultimo comando - deberá definirs
 extern int ejecutar(int argc, char **argv);
 extern int externo(int argc, char **argv);
 extern int linea2argv(char *linea, int argc, char **argv);
-/*
+void catch_ctrl_C(int); // Manejador de SIGINT
+                        /*
     builtin_arr es una lista de los builtins, que se recorrerá en forma lineal.
     Podría usarse una estructura que mejorara la velocidad de búsqueda, pero
     en este ejercicio una lista que se recorre en forma lineal es suficiente.
