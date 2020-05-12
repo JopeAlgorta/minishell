@@ -2,8 +2,7 @@
 
 int builtin_exit(int argc, char **argv)
 {
-    char c = argv[1];
-    int i = c - '0';
-    exit(i);
+    printf("Bye!\n");
+    exit(atoi(argv[1]));
     return 0;
 }

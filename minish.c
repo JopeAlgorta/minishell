@@ -2,7 +2,6 @@
 #include "builtins.h"
 
 int globalstatret = 0;
-void run(char *, char, char **);
 
 int main()
 {
@@ -15,7 +14,18 @@ int main()
     act.sa_handler = catch_ctrl_C;
     sigaction(SIGINT, &act, NULL);
 
-    run(line, argc, argv);
+    char *res;
+    while (1)
+    {
+        print_prompt();
+        res = fgets(line, MAXLINE, stdin);
+        append_history(line);
+        argc = linea2argv(line, MAXWORDS, argv);
+        if (res != NULL && argc > 0)
+            if (ejecutar(argc, argv) == -1)
+                perror("minish");
+        argc = 0;
+    }
     return 0;
 }
 
@@ -35,29 +45,28 @@ void catch_ctrl_C(int sig)
     return;
 }
 
-void run(char *line, char argc, char **argv)
+void append_history(char *line)
 {
-    char *res;
     char *home, minish_history_dir[MAXCWD];
     FILE *f;
+    int y, m, d, h, min, s;
+    time_t now;
+    struct tm *local;
 
-    while (1)
+    home = getenv("HOME");
+    snprintf(minish_history_dir, MAXCWD, "%s/%s", home, HISTORY_FILE);
+    f = fopen(minish_history_dir, "a");
+    if (f != NULL)
     {
-        print_prompt();
-        res = fgets(line, MAXLINE, stdin);
-        home = getenv("HOME");
-        snprintf(minish_history_dir, MAXCWD, "%s/%s", home, HISTORY_FILE);
-        f = fopen(minish_history_dir, "a");
-        if (f != NULL)
-        {
-            fprintf(f, "%s", line);
-            fclose(f);
-        }
-        argc = linea2argv(line, MAXWORDS, argv);
-        if (res != NULL && argc > 0)
-            ejecutar(argc, argv);
-        // else if (res == NULL)
-        //     putchar('\n');
-        argc = 0;
+        time(&now);
+        local = localtime(&now);
+        y = local->tm_year + 1900;
+        m = local->tm_mon + 1;
+        d = local->tm_mday;
+        h = local->tm_hour;
+        min = local->tm_min;
+        s = local->tm_sec;
+        fprintf(f, "%02d-%02d-%04d\t%02d:%02d:%02d\t%s", d, m, y, h, min, s, line);
+        fclose(f);
     }
 }

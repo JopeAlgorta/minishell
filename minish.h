@@ -12,6 +12,8 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <limits.h>
+#include <dirent.h>
+#include <time.h>
 
 #define MAXLINE 1024                   // tamaño máximo de la línea de entrada
 #define MAXCWD 1024                    // tamaño máximo para alojar el pathname completo del directorio corriente
@@ -20,7 +22,6 @@
 
 #define DELIMS " \n\t" // delimitadores de argumentos para argv
 
-extern void print_prompt(); // imprime el prompt string
 /*
 #include <unistd.h>
 #include <stdlib.h>
@@ -45,8 +46,11 @@ extern int globalstatret; // guarda status del ultimo comando - deberá definirs
 extern int ejecutar(int argc, char **argv);
 extern int externo(int argc, char **argv);
 extern int linea2argv(char *linea, int argc, char **argv);
-void catch_ctrl_C(int); // Manejador de SIGINT
-                        /*
+void catch_ctrl_C(int);             // Manejador de SIGINT
+extern void print_prompt();         // imprime el prompt string
+extern void append_history(char *); // registra el comando ejecutado en el archivo ~/.minish_history
+
+/*
     builtin_arr es una lista de los builtins, que se recorrerá en forma lineal.
     Podría usarse una estructura que mejorara la velocidad de búsqueda, pero
     en este ejercicio una lista que se recorre en forma lineal es suficiente.

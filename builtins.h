@@ -4,6 +4,9 @@
 #include <stdlib.h>
 #include <pwd.h>
 #include "minish.h"
+#include <string.h>
+#include <ctype.h>
+#include <grp.h>
 
 #define HELP_CD "cd [..|dir] - cambia de directorio corriente"
 #define HELP_DIR "dir [str]- muestra archivos en directorio corriente, que tengan 'str'"
@@ -14,8 +17,12 @@
 #define HELP_PID "pid - muestra Process Id del minish"
 #define HELP_SETENV "setenv var valor - agrega o cambia valor de variable de ambiente"
 #define HELP_UNSETENV "unsetenv var [var...] - elimina las variables de ambiente especificadas"
+#define HELP_GID "gid - muestra el grupo principal y los grupos secundarios del usuario"
 #define HELP_STATUS "status - muestra status de retorno de ultimo comando ejecutado"
 #define HELP_UID "uid - muestra nombre y número de usuario dueño del minish"
+
+#define MAXLINES 5000    // max #lines to be to show in command 'history'
+#define LIMITGROUPS 1000 // limite de grupos del usuario
 
 #define HELPOPT "--help"
 

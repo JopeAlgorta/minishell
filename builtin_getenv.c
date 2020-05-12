@@ -3,11 +3,9 @@
 int builtin_getenv(int argc, char **argv)
 {
     char *cmd;
-    if (argc > 1)
-        if ((cmd = getenv(argv[1])) != NULL)
-        {
-            printf("%s=%s\n", argv[1], cmd);
-            return 0;
-        }
-    return -1;
+    for (int i = 1; i < argc; i++) // Por cada variable especificada se imprime su valor si existe.
+        if ((cmd = getenv(argv[i])) != NULL)
+            printf("%s=%s\n", argv[i], cmd);
+
+    return 0;
 }

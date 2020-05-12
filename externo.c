@@ -9,10 +9,10 @@ int externo(int argc, char **argv)
     if (pid == 0)
     {
         // Proceso Hijo
-
-        sigaction(SIGINT, NULL, &act);
-        act.sa_handler = SIG_DFL;
+        sigaction(SIGINT, NULL, &act); // El proceso hijo tratara la señal SIGINT con su
+        act.sa_handler = SIG_DFL;      // comportamiento normal.
         sigaction(SIGINT, &act, NULL);
+
         if (execvp(argv[0], argv) < 0)
             printf("minish: command '%s' not found\n", argv[0]);
     }
@@ -21,22 +21,21 @@ int externo(int argc, char **argv)
     else
     {
         // Proceso padre
-        sigaction(SIGINT, NULL, &act);
-        act.sa_handler = SIG_IGN;
+        sigaction(SIGINT, NULL, &act); // Cambio tratamiento de señal SIGINT
+        act.sa_handler = SIG_IGN;      // para que el minish la ignore.
         sigaction(SIGINT, &act, NULL);
+
         do
         {
             wpid = waitpid(pid, &status, WUNTRACED);
             if (wpid == -1)
-            {
-                perror("waitpid");
-                exit(EXIT_FAILURE);
-            }
+                perror("minish");
         } while (!WIFEXITED(status) && !WIFSIGNALED(status));
-        sigaction(SIGINT, NULL, &act);
-        act.sa_handler = catch_ctrl_C;
+
+        sigaction(SIGINT, NULL, &act); // Cambio tratamiento de señal SIGINT para
+        act.sa_handler = catch_ctrl_C; // que no mate el proceso del minish.
         sigaction(SIGINT, &act, NULL);
     }
 
-    return 1;
+    return 0;
 }

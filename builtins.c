@@ -11,6 +11,7 @@ struct builtin_struct builtin_arr[] = {
     {"history", builtin_history, HELP_HISTORY},
     {"getenv", builtin_getenv, HELP_GETENV},
     {"pid", builtin_pid, HELP_PID},
+    {"gid", builtin_gid, HELP_GID},
     {"setenv", builtin_setenv, HELP_SETENV},
     {"unsetenv", builtin_unsetenv, HELP_UNSETENV},
     {"status", builtin_status, HELP_STATUS},
@@ -22,9 +23,9 @@ builtin_lookup(char *cmd)
 {
     struct builtin_struct *builtin_struct_ptr = NULL;
     builtin_struct_ptr = builtin_arr;
-    while (builtin_struct_ptr->cmd != NULL)
+    while (builtin_struct_ptr->cmd != NULL) // Recorre todo el builtin_arr
     {
-        if (strcmp(cmd, builtin_struct_ptr->cmd) == 0)
+        if (strcmp(cmd, builtin_struct_ptr->cmd) == 0) // Si encuentra el comando lo devuelve.
             return builtin_struct_ptr;
         builtin_struct_ptr++;
     }
