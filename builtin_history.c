@@ -5,7 +5,10 @@ int builtin_history(int argc, char **argv)
     if (argc > 2)
     {
         errno = E2BIG; // Muchos argumentos
-        perror("minish");
+        {
+            perror("history");
+            return errno;
+        }
     }
     else
     {
@@ -13,7 +16,10 @@ int builtin_history(int argc, char **argv)
         char *home, minish_history_dir[MAXCWD], *lineptr[MAXLINES];
         FILE *f;
         if ((home = getenv("HOME")) == NULL)
-            perror("minish");
+        {
+            perror("history");
+            return errno;
+        }
         snprintf(minish_history_dir, MAXCWD, "%s/%s", home, HISTORY_FILE);
         if ((f = fopen(minish_history_dir, "r")) == NULL)
             return -1;
@@ -32,7 +38,10 @@ int builtin_history(int argc, char **argv)
         while (nlines >= 0 && linesToRead >= 0)
             printf("%s", lineptr[nlines--]), linesToRead--;
         if (fclose(f) == EOF)
-            perror("minish");
+        {
+            perror("history");
+            return errno;
+        }
     }
     return 0;
 }

@@ -10,10 +10,13 @@ int builtin_help(int argc, char **argv)
         {
             printf("%s\n", builtin_struct_ptr->help_txt);
             builtin_struct_ptr++;
-        }   
+        }
     }
     else if (argc > 2)
-        perror("minish");
+    {
+        perror("help");
+        return errno;
+    }
     else
     {
         struct builtin_struct *matched_struct;

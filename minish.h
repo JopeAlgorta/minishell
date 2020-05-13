@@ -20,6 +20,9 @@
 #define MAXWORDS 256                   // cantidad máxima de palabras en la línea
 #define HISTORY_FILE ".minish_history" // nombre del archivo que almacena historia de comandos
 
+#define HOME "HOME"
+#define OLDPWD "OLDPWD"
+
 #define DELIMS " \n\t" // delimitadores de argumentos para argv
 
 /*

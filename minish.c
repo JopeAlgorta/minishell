@@ -14,18 +14,18 @@ int main()
     sigint_act.sa_handler = catch_ctrl_C;
     sigaction(SIGINT, &sigint_act, NULL);
 
-	
     char *res;
     while (1)
     {
         print_prompt();
-        res = fgets(line, MAXLINE, stdin); 
-		append_history(line);
+        res = fgets(line, MAXLINE, stdin);
+        append_history(line);
         argc = linea2argv(line, MAXWORDS, argv);
-		if (res != NULL && argc > 0)
-			if (ejecutar(argc, argv) == -1)
-                perror("minish");
-		argc = 0;
+        if (res != NULL && argc > 0)
+            ejecutar(argc, argv);
+        else if (res == NULL && feof(stdin))
+            printf("exit\n"), exit(EXIT_SUCCESS);
+        argc = 0;
     }
     return 0;
 }

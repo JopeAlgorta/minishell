@@ -17,7 +17,10 @@ int externo(int argc, char **argv)
             printf("minish: command '%s' not found\n", argv[0]);
     }
     else if (pid < 0) // Error haciendo el fork()
+    {
         perror("minish");
+        return errno;
+    }
     else
     {
         // Proceso padre
@@ -29,7 +32,10 @@ int externo(int argc, char **argv)
         {
             wpid = waitpid(pid, &status, WUNTRACED);
             if (wpid == -1)
-                perror("minish");
+            {
+                perror("waitpid");
+                return errno;
+            }
         } while (!WIFEXITED(status) && !WIFSIGNALED(status));
 
         sigaction(SIGINT, NULL, &act); // Cambio tratamiento de señal SIGINT para

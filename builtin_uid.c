@@ -7,6 +7,9 @@ int builtin_uid(int argc, char **argv)
     if ((pwd = getpwuid(getuid())) != NULL)
         printf("Name: %s\t UID: %ld\n", pwd->pw_gecos, (long)pwd->pw_uid);
     else
-        perror("minish");
+    {
+        perror("uid");
+        return errno;
+    }
     return 0;
 }

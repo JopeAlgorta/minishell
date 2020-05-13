@@ -8,7 +8,8 @@ struct tnode
 };
 
 struct tnode *addtree(struct tnode *, char *);
-void treeprint(struct tnode *p);
+void treeprint(struct tnode *);
+void freetree(struct tnode *);
 
 int builtin_dir(int argc, char **argv)
 {
@@ -18,7 +19,7 @@ int builtin_dir(int argc, char **argv)
     struct dirent *dir;
     if ((directory = opendir(".")) != NULL) // "." es una referencia al directorio actual, entonces guardo en directory (que es un stream) la lista de archivos y carpetas de el directorio actual
     {
-		errno = 0; // Se setea errno en 0 ya que readdir() retorna null en dos casos. El primero es cuando termina de leer todos los archivos y carpetas, que no es un error. El segundo es, si efectivamente existe un error entonces setea errno a otro valor distinto de cero.
+        errno = 0;                         // Se setea errno en 0 ya que readdir() retorna null en dos casos. El primero es cuando termina de leer todos los archivos y carpetas, que no es un error. El segundo es, si efectivamente existe un error entonces setea errno a otro valor distinto de cero.
         while ((dir = readdir(directory))) // Leo el directorio
         {
             if (argv[1])
@@ -29,15 +30,24 @@ int builtin_dir(int argc, char **argv)
             else
                 root = addtree(root, dir->d_name);
         }
-		if (errno != 0) // Ocurre un error con readdir()
-			perror("minish");
-        treeprint(root); // Se imprime el arbol
-		if (closedir(directory) == -1) // Se cierra el directorio
-			perror("minish");
+        if (errno != 0) // Ocurre un error con readdir()
+        {
+            perror("dir");
+            return errno;
+        }
+        treeprint(root);               // Se imprime el arbol
+        if (closedir(directory) == -1) // Se cierra el directorio
+        {
+            perror("dir");
+            return errno;
+        }
     }
-	else
-		perror("minish");
-    free(root);
+    else
+    {
+        perror("dir");
+        return errno;
+    }
+    freetree(root);
     return 0;
 }
 
@@ -84,5 +94,15 @@ void treeprint(struct tnode *p)
         treeprint(p->left);
         printf("%s\n", p->word);
         treeprint(p->right);
+    }
+}
+
+void freetree(struct tnode *p)
+{
+    if (p != NULL)
+    {
+        freetree(p->left);
+        free(p);
+        freetree(p->right);
     }
 }
