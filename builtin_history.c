@@ -1,25 +1,22 @@
 #include "builtins.h"
 
-void _qsort(char **, int, int);
-void swap(char **, int, int);
-
 int builtin_history(int argc, char **argv)
 {
     if (argc > 2)
     {
-        printf("minish: %s: too many arguments", argv[0]);
-        return -1;
+        errno = E2BIG; // Muchos argumentos
+        perror("minish");
     }
     else
     {
-        int lines = 0;
-        int linesToRead = 10;
-        char *home, minish_history_dir[MAXCWD];
+        int linesToRead = 10; // Por defecto, inicializo las lineas a leer en 10
+        char *home, minish_history_dir[MAXCWD], *lineptr[MAXLINES];
         FILE *f;
-        char *lineptr[MAXLINES]; // pointers to text lines
-        home = getenv("HOME");
+        if ((home = getenv("HOME")) == NULL)
+            perror("minish");
         snprintf(minish_history_dir, MAXCWD, "%s/%s", home, HISTORY_FILE);
-        f = fopen(minish_history_dir, "r");
+        if ((f = fopen(minish_history_dir, "r")) == NULL)
+            return -1;
         if (argc > 1)
             linesToRead = atoi(argv[1]) - 1;
         char line[MAXLINE];
@@ -31,37 +28,11 @@ int builtin_history(int argc, char **argv)
             strcpy(p, line);
             lineptr[nlines++] = p;
         }
-        _qsort(lineptr, 0, nlines - 1);
-
-        while (linesToRead >= 0)
-            printf("%s", lineptr[linesToRead--]);
-        fclose(f);
-        // free(lineptr);
+        nlines--; // Decremento en uno el numero de lineas para posicionarme en el ultimo elemento del array
+        while (nlines >= 0 && linesToRead >= 0)
+            printf("%s", lineptr[nlines--]), linesToRead--;
+        if (fclose(f) == EOF)
+            perror("minish");
     }
     return 0;
-}
-
-/* _qsort: sort v[left]...v[right] into increasing order */
-void _qsort(char *v[], int left, int right)
-{
-    int i, last;
-    void swap(char *v[], int i, int j);
-    if (left >= right) // do nothing if array contains fewer than two elements
-        return;
-    swap(v, left, (left + right) / 2);
-    last = left;
-    for (i = left + 1; i <= right; i++)
-        if (strcmp(v[i], v[left]) > 0)
-            swap(v, ++last, i);
-    swap(v, left, last);
-    _qsort(v, left, last - 1);
-    _qsort(v, last + 1, right);
-}
-/* swap: interchange v[i] and v[j] */
-void swap(char *v[], int i, int j)
-{
-    char *temp;
-    temp = v[i];
-    v[i] = v[j];
-    v[j] = temp;
 }

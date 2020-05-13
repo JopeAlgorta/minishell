@@ -5,26 +5,27 @@ int globalstatret = 0;
 
 int main()
 {
-    struct sigaction act;
+    struct sigaction sigint_act;
     char line[MAXLINE];
     char *argv[MAXWORDS];
     int argc = 0;
 
-    sigaction(SIGINT, NULL, &act);
-    act.sa_handler = catch_ctrl_C;
-    sigaction(SIGINT, &act, NULL);
+    sigaction(SIGINT, NULL, &sigint_act);
+    sigint_act.sa_handler = catch_ctrl_C;
+    sigaction(SIGINT, &sigint_act, NULL);
 
+	
     char *res;
     while (1)
     {
         print_prompt();
-        res = fgets(line, MAXLINE, stdin);
-        append_history(line);
+        res = fgets(line, MAXLINE, stdin); 
+		append_history(line);
         argc = linea2argv(line, MAXWORDS, argv);
-        if (res != NULL && argc > 0)
-            if (ejecutar(argc, argv) == -1)
+		if (res != NULL && argc > 0)
+			if (ejecutar(argc, argv) == -1)
                 perror("minish");
-        argc = 0;
+		argc = 0;
     }
     return 0;
 }
