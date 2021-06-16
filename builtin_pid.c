@@ -3,5 +3,8 @@
 int builtin_pid(int argc, char **argv)
 {
     if (argc == 1)
-        printf("PID:\t%-4d\n", getpid());
+        printf("%s:\t%-4d\n", argv[0], getpid());
+	else	
+		return -1;
+	return 0;
 }

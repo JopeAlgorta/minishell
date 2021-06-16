@@ -26,8 +26,6 @@
 
 #define HELPOPT "--help"
 
-extern char **environ;
-
 extern int builtin_exit(int argc, char **argv);
 extern int builtin_help(int argc, char **argv);
 extern int builtin_history(int argc, char **argv);

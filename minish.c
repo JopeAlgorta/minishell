@@ -40,7 +40,7 @@ void print_prompt()
     fprintf(stderr, "\033[0;36m%s@%s\033[0m:\033[01;33m%s\033[0m> ", user, hostname, cwd);
 }
 
-void catch_ctrl_C(int sig)
+void catch_ctrl_C(__attribute__((unused)) int sig)
 {
     putchar('\n');
     return;

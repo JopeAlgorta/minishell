@@ -13,12 +13,12 @@ int externo(int argc, char **argv)
         act.sa_handler = SIG_DFL;      // comportamiento normal.
         sigaction(SIGINT, &act, NULL);
 
-        if (execvp(argv[0], argv) < 0)
-            printf("minish: command '%s' not found\n", argv[0]);
-    }
+        if (argc > 0 && execvp(argv[0], argv) < 0)
+			printf("minish: command '%s' not found\n", argv[0]);
+	}
     else if (pid < 0) // Error haciendo el fork()
     {
-        perror("minish");
+        perror("fork error");
         return errno;
     }
     else
@@ -43,5 +43,5 @@ int externo(int argc, char **argv)
         sigaction(SIGINT, &act, NULL);
     }
 
-    return 0;
+    return errno;
 }

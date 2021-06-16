@@ -25,7 +25,7 @@ int builtin_gid(int argc, char **argv)
     }
     else
     {
-        fprintf(stderr, "dir: %s: too many arguments\n", argv[0]);
+        fprintf(stderr, "minish: %s: too many arguments\n", argv[0]);
         return -1;
     }
 }

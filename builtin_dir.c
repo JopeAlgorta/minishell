@@ -22,7 +22,7 @@ int builtin_dir(int argc, char **argv)
         errno = 0;                         // Se setea errno en 0 ya que readdir() retorna null en dos casos. El primero es cuando termina de leer todos los archivos y carpetas, que no es un error. El segundo es, si efectivamente existe un error entonces setea errno a otro valor distinto de cero.
         while ((dir = readdir(directory))) // Leo el directorio
         {
-            if (argv[1])
+            if (argc > 1)
             {
                 if (strstr(dir->d_name, argv[1])) // comparo lexicograficamente
                     root = addtree(root, dir->d_name);
@@ -102,7 +102,23 @@ void freetree(struct tnode *p)
     if (p != NULL)
     {
         freetree(p->left);
-        free(p);
+		free(p->word);
+		free(p);
         freetree(p->right);
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

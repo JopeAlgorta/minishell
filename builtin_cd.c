@@ -16,12 +16,12 @@ int builtin_cd(int argc, char **argv)
     }
     else if (argc == 1) // solo un argumento significa ir al directorio de la variable $HOME
     {
-        if (setenv("OLDPWD", cwd, 1) == -1) // seteo $OLDPWD en el directorio actual
+        if (setenv(OLDPWD, cwd, 1) == -1) // seteo $OLDPWD en el directorio actual
         {
             perror("cd");
             return errno;
         }
-        if ((home = getenv("HOME")) == NULL)
+        if ((home = getenv(HOME)) == NULL)
         {
             perror("cd");
             return errno;
@@ -30,7 +30,7 @@ int builtin_cd(int argc, char **argv)
     }
     else if (strcmp(argv[1], "-") == 0) // "cd -"  significa ir al directorio anterior al actual
     {
-        if ((oldpwd = getenv("OLDPWD")) == NULL) // Obtengo el valor de $OLDPWD
+        if ((oldpwd = getenv(OLDPWD)) == NULL) // Obtengo el valor de $OLDPWD
         {
             perror("cd");
             return errno;

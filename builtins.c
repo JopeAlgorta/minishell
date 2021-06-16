@@ -1,7 +1,4 @@
-
-#include <string.h>
 #include "builtins.h"
-#include <stdio.h>
 
 struct builtin_struct builtin_arr[] = {
     {"cd", builtin_cd, HELP_CD},

@@ -6,7 +6,7 @@ int builtin_history(int argc, char **argv)
     {
         errno = E2BIG; // Muchos argumentos
         {
-            perror("history");
+            perror("history"); // Se probo una manera distinta de mandar un error.
             return errno;
         }
     }
@@ -15,14 +15,14 @@ int builtin_history(int argc, char **argv)
         int linesToRead = 10; // Por defecto, inicializo las lineas a leer en 10
         char *home, minish_history_dir[MAXCWD], *lineptr[MAXLINES];
         FILE *f;
-        if ((home = getenv("HOME")) == NULL)
+        if ((home = getenv(HOME)) == NULL)
         {
             perror("history");
             return errno;
         }
         snprintf(minish_history_dir, MAXCWD, "%s/%s", home, HISTORY_FILE);
         if ((f = fopen(minish_history_dir, "r")) == NULL)
-            return -1;
+            return errno;
         if (argc > 1)
             linesToRead = atoi(argv[1]) - 1;
         char line[MAXLINE];
@@ -33,6 +33,7 @@ int builtin_history(int argc, char **argv)
             p = malloc(strlen(line));
             strcpy(p, line);
             lineptr[nlines++] = p;
+//			free(p);
         }
         nlines--; // Decremento en uno el numero de lineas para posicionarme en el ultimo elemento del array
         while (nlines >= 0 && linesToRead >= 0)
